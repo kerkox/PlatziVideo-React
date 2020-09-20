@@ -1,4 +1,5 @@
 import React from 'react'
+import '../assets/styles/components/CarouselItem.scss'
 
 const CarouselItem = () => (
   <div className="carousel-item">
