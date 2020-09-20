@@ -7,3 +7,5 @@ const Carousel = ({ children }) => (
     </div>
   </section>
 )
+
+export default Carousel;
