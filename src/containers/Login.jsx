@@ -1,5 +1,6 @@
 import React from 'react';
 import '../assets/styles/components/Login.scss';
+import { Link } from 'react-router-dom';
 import googleIcon from '../assets/static/google-icon.png';
 import twitterIcon from '../assets/static/twitter-icon.png';
 
@@ -12,10 +13,10 @@ const Login = () => (
         <input className='input' type='password' placeholder='Contraseña' />
         <button className='button' type='button'>Iniciar sesión</button>
         <div className='login__container--remember-me'>
-          <labe htmlFor='cbox1'>
+          <label htmlFor='cbox1'>
             <input type='checkbox' id='cbox1' value='first_checkbox' />
             Recuérdame
-          </labe>
+          </label>
           <a href='/'>Olvidé mi contraseña</a>
         </div>
       </form>
@@ -34,7 +35,9 @@ const Login = () => (
       <p className='login__container--register'>
         No tienes ninguna cuenta
         {' '}
-        <a href='#top'> Regístrate</a>
+        <Link to='/register'>
+          Regístrate
+        </Link>
       </p>
     </section>
   </section>
