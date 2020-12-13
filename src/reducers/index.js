@@ -8,7 +8,7 @@ const reducer = (state, action) => {
           myList: [...state.myList, action.payload],
         };
       }
-      return state;
+      return { ...state };
 
     case 'DELETE_FAVORITE':
       return {
@@ -17,6 +17,11 @@ const reducer = (state, action) => {
       };
 
     case 'LOGIN_REQUEST':
+      return {
+        ...state,
+        user: action.payload,
+      };
+    case 'LOGOUT_REQUEST':
       return {
         ...state,
         user: action.payload,
