@@ -1,4 +1,8 @@
 const reducer = (state, action) => {
+  const filter = (item, search) => {
+    return item.description.toLowerCase().includes(search.toLowerCase()) ||
+      item.title.toLowerCase().includes(search.toLowerCase());
+  };
 
   switch (action.type) {
     case 'SET_FAVORITE':
@@ -42,12 +46,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         search: action.payload,
-        trendsFilter: state.trends.filter((item) => item.description.toLowerCase().includes(action.payload.toLowerCase()) || item.title.toLowerCase().includes(action.payload.toLowerCase())),
-        originalsFilter: state.originals.filter((item) => item.description.toLowerCase().includes(action.payload.toLowerCase()) || item.title.toLowerCase().includes(action.payload.toLowerCase())),
+        trendsFilter: state.trends.filter((item) => filter(item, action.payload)),
+        originalsFilter: state.originals.filter((item) => filter(item, action.payload)),
       };
     default:
       return state;
   }
-
 };
 export default reducer;
