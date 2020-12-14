@@ -55,10 +55,12 @@ const Home = ({ myList, trends, originals }) => {
 };
 
 const mapStateToProps = (state) => {
+  console.log('state.search', state.search);
+  console.log('state.trendsFilter', state.trendsFilter);
   return {
     myList: state.myList,
-    trends: state.trends,
-    originals: state.originals,
+    trends: state.search ? state.trendsFilter : state.trends,
+    originals: state.search ? state.originalsFilter : state.originals,
   };
 };
 export default connect(mapStateToProps, null)(Home);

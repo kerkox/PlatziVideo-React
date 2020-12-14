@@ -38,6 +38,13 @@ const reducer = (state, action) => {
         state.originals.find((item) => item.id === Number(action.payload)) ||
         [],
       };
+    case 'FILTER_VIDEOS':
+      return {
+        ...state,
+        search: action.payload,
+        trendsFilter: state.trends.filter((item) => item.description.toLowerCase().includes(action.payload.toLowerCase()) || item.title.toLowerCase().includes(action.payload.toLowerCase())),
+        originalsFilter: state.originals.filter((item) => item.description.toLowerCase().includes(action.payload.toLowerCase()) || item.title.toLowerCase().includes(action.payload.toLowerCase())),
+      };
     default:
       return state;
   }

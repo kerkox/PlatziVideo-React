@@ -9,6 +9,8 @@ const initialState = {
   'user': {},
   'playing': {},
   'myList': [],
+  'search': '',
+  'trendsFilter': [],
   'trends': [
     {
       'id': 2,
@@ -89,6 +91,7 @@ const initialState = {
       'source': 'https://mdstrm.com/video/58333e214ad055d208427db5.mp4',
     },
   ],
+  'originalsFilter': [],
   'originals': [
     {
       'id': 8,
