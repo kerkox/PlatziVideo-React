@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import webpack from 'webpack';
+import Helmet from 'helmet';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Provider } from 'react-redux';
@@ -10,6 +11,7 @@ import { StaticRouter } from 'react-router-dom';
 import serverRoutes from '../frontend/routes/serverRoutes';
 import reducer from '../frontend/reducers';
 import initialState from '../frontend/initialState';
+import helmet from 'helmet';
 
 
 dotenv.config();
@@ -29,9 +31,19 @@ if (ENV == 'development') {
 
   app.use(webpackDevMiddleware(compiler, serverConfig));
   app.use(webpackHotMiddleware(compiler));
+} else {
+  app.use(express.static(`${__dirname}/public`));
+  app.use(helmet());
+  app.use(
+    helmet.permittedCrossDomainPolicies({
+      permittedPolicies: "none",
+    })
+  );
+  app.disable('x-powered-by');
+
 }
 
-const setResponse = (html) => {
+const setResponse = (html, preloadedState) => {
   return (`
   <!DOCTYPE html>
   <html lang="es">
@@ -45,6 +57,9 @@ const setResponse = (html) => {
 
   <body>
     <div id="app">${html}</div>
+    <script>
+      window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\u003c')}
+    </script>
     <script src="/assets/app.js" type="text/javascript"></script>
   </body>
 
@@ -54,6 +69,7 @@ const setResponse = (html) => {
 
 const renderApp = (req, res) => {
   const store = createStore(reducer, initialState);
+  const preloadedState = store.getState();
   const html = renderToString(
     <Provider store={store}>
       <StaticRouter location={req.url} context={{}}>
@@ -61,7 +77,8 @@ const renderApp = (req, res) => {
       </StaticRouter>
     </Provider>
   );
-  res.send(setResponse(html));
+  res.set("Content-Security-Policy", "default-src 'self'; img-src 'self' http://dummyimage.com; script-src 'self' 'sha256-FHDpKcvGUi1iSAdix/k2dbFk10fS3phxZxT9ITIkWLM='; style-src-elem 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com");
+  res.send(setResponse(html, preloadedState));
 }
 
 app.get('*', renderApp)
