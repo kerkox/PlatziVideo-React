@@ -12,6 +12,8 @@ import serverRoutes from '../frontend/routes/serverRoutes';
 import reducer from '../frontend/reducers';
 import initialState from '../frontend/initialState';
 import helmet from 'helmet';
+import getManifest from './getManifest';
+
 
 
 dotenv.config();
@@ -32,6 +34,10 @@ if (ENV == 'development') {
   app.use(webpackDevMiddleware(compiler, serverConfig));
   app.use(webpackHotMiddleware(compiler));
 } else {
+  app.use((req, res, next) => {
+    if (!req.hashManifest) req.hashManifest = getManifest();
+    next();
+  })
   app.use(express.static(`${__dirname}/public`));
   app.use(helmet());
   app.use(
@@ -43,7 +49,9 @@ if (ENV == 'development') {
 
 }
 
-const setResponse = (html, preloadedState) => {
+const setResponse = (html, preloadedState, manifest) => {
+  const mainStyles = manifest ? manifest['main.css'] : '/assets/app.css';
+  const mainBuild = manifest ? manifest['main.js'] : '/assets/app.js';
   return (`
   <!DOCTYPE html>
   <html lang="es">
@@ -51,7 +59,7 @@ const setResponse = (html, preloadedState) => {
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/assets/app.css" type="text/css">
+    <link rel="stylesheet" href="${mainStyles}" type="text/css">
     <title>Platzi Video</title>
   </head>
 
@@ -60,7 +68,7 @@ const setResponse = (html, preloadedState) => {
     <script>
       window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\u003c')}
     </script>
-    <script src="/assets/app.js" type="text/javascript"></script>
+    <script src="${mainBuild}" type="text/javascript"></script>
   </body>
 
   </html>
@@ -78,7 +86,7 @@ const renderApp = (req, res) => {
     </Provider>
   );
   res.set("Content-Security-Policy", "default-src 'self'; img-src 'self' http://dummyimage.com; script-src 'self' 'sha256-FHDpKcvGUi1iSAdix/k2dbFk10fS3phxZxT9ITIkWLM='; style-src-elem 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com");
-  res.send(setResponse(html, preloadedState));
+  res.send(setResponse(html, preloadedState, req.hashManifest));
 }
 
 app.get('*', renderApp)
