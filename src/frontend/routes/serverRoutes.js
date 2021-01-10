@@ -4,7 +4,7 @@ import NotFound from '../containers/NotFound';
 import Player from '../containers/Player';
 import Register from '../containers/Register';
 
-const routes = [
+const serverRoutes = [
   {
     exact: true,
     path:'/',
@@ -32,4 +32,4 @@ const routes = [
   },
 ];
 
-export default routes;
+export default serverRoutes;
