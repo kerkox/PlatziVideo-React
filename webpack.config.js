@@ -32,8 +32,8 @@ module.exports = {
     splitChunks: {
       chunks: 'async',
       cacheGroups: {
-        vendors: {
-          name: 'vendors',
+        defaultVendors: {
+          name:'vendors',
           chunks: 'all',
           reuseExistingChunk: true,
           priority: 1,
