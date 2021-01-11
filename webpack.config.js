@@ -5,6 +5,7 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 require('dotenv').config();
 
@@ -83,6 +84,8 @@ module.exports = {
     historyApiFallback: true,
   },
   plugins: [
+    isDev ? new ESLintPlugin() :
+    () => {},
     isDev
       ? () => { }
       : new CleanWebpackPlugin({
